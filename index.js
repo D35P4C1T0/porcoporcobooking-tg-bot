@@ -28,6 +28,7 @@ const TelegrafInlineMenu = require('telegraf-inline-menu')
 const binID = process.env.JSONBINID
 const tg_TOKEN = process.env.TGBOTAPI
 const crypto = require('./extras/crypto')
+const PORT = process.env.PORT || 3000
 
 const menu = new TelegrafInlineMenu(
   ctx => `Hey ${ctx.from.first_name}` + welcomeMessage
@@ -45,6 +46,10 @@ menu.setCommand('start')
 const bot = new Telegraf(tg_TOKEN)
 bot.use(commandParts())
 bot.use(menu.init())
+
+bot.listen(PORT, () => {
+  console.log(`The bot is running on port ${PORT}`)
+})
 
 let welcomeMessage =
   ', questo bot ti permette di prenotare un posto nella mia macchina, ed è ancora in fase sperimentale.\n➡ Premi il tasto Controlla per controllare i posti disponibili \n➡ Premi il tasto Prenota per richiedere una prenotazione'
