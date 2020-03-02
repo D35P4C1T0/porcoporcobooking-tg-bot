@@ -22,6 +22,7 @@ const { Markup } = require('telegraf')
 const axios = require('axios')
 const commandParts = require('./extras/telegraf-command-parts')
 const TelegrafInlineMenu = require('telegraf-inline-menu')
+require('dotenv').config()
 
 // Apikeys
 // const JsonBinApiKey = require('./extras/jsonBin').ApiKey
@@ -29,6 +30,23 @@ const binID = process.env.JSONBINID
 const tg_TOKEN = process.env.TGBOTAPI
 const crypto = require('./extras/crypto')
 const PORT = process.env.PORT || 3000
+
+const http = require('http')
+
+const server = http.createServer((req, res) => {
+  res.writeHead(200, { 'Content-Type': 'text/plain' })
+  res.end('Esempio server HTTP\n')
+})
+
+const callback = () => {
+  const address = server.address().address
+  const port = server.address().port
+  console.log(`
+  Server avviato all'indirizzo http://${address}:${port}
+  `)
+}
+
+server.listen(PORT, callback)
 
 const menu = new TelegrafInlineMenu(
   ctx => `Hey ${ctx.from.first_name}` + welcomeMessage
@@ -46,10 +64,6 @@ menu.setCommand('start')
 const bot = new Telegraf(tg_TOKEN)
 bot.use(commandParts())
 bot.use(menu.init())
-
-bot.listen(PORT, () => {
-  console.log(`The bot is running on port ${PORT}`)
-})
 
 let welcomeMessage =
   ', questo bot ti permette di prenotare un posto nella mia macchina, ed è ancora in fase sperimentale.\n➡ Premi il tasto Controlla per controllare i posti disponibili \n➡ Premi il tasto Prenota per richiedere una prenotazione'
